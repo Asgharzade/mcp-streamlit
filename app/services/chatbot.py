@@ -17,26 +17,29 @@ class MCPChatbot:
         """Use OpenAI to detect if the message requires a search and extract the query"""
         logger.info(f"Detecting intent for message: '{message[:50]}...' if len(message) > 50 else message")
         
-        system_prompt = """You are an intent detection system for a chatbot that can search the web.
+        system_prompt = """
+        You are an intent detection system for a chatbot that can search the web.
 
-Analyze the user's message and determine:
-1. Whether they need current information, facts, or data that would require a web search
-2. What the optimal search query should be
+        Analyze the user's message and determine:
+        1. Whether they need current information, facts, or data that would require a web search
+        2. What the optimal search query should be
 
-Return a JSON response with:
-- "needs_search": boolean (true if web search is needed)
-- "search_query": string (the optimized search query, or null if no search needed)
-- "reasoning": string (brief explanation of your decision)
+        Return a JSON response with:
+        - "needs_search": boolean (true if web search is needed)
+        - "search_query": string (the optimized search query, or null if no search needed)
+        - "reasoning": string (brief explanation of your decision)
 
-Examples:
-- "What's the weather like?" → needs_search: true, search_query: "current weather"
-- "Hello, how are you?" → needs_search: false, search_query: null
-- "Tell me about quantum computing" → needs_search: true, search_query: "quantum computing latest developments"
-- "What's 2+2?" → needs_search: false, search_query: null
-- "Latest news about AI" → needs_search: true, search_query: "latest AI news 2024"
-- "How to make coffee" → needs_search: true, search_query: "how to make coffee step by step"
+        Examples:
+        - "What time/date is it?" → needs_search: true, search_query: "current datetime"
+        - "What's the weather like?" → needs_search: true, search_query: "current weather"
+        - "Hello, how are you?" → needs_search: false, search_query: null
+        - "Tell me about quantum computing" → needs_search: true, search_query: "quantum computing latest developments"
+        - "What's 2+2?" → needs_search: false, search_query: null
+        - "Latest news about AI" → needs_search: true, search_query: "latest AI news 2024"
+        - "How to make coffee" → needs_search: true, search_query: "how to make coffee step by step"
 
-Focus on detecting when users need current, factual, or specific information that would benefit from a web search."""
+        Focus on detecting when users need current, factual, or specific information that would benefit from a web search.
+        """
 
         try:
             logger.info("Calling OpenAI API for intent detection")
@@ -131,9 +134,11 @@ Focus on detecting when users need current, factual, or specific information tha
         """Generate a conversational response using OpenAI"""
         try:
             logger.info("Generating response with OpenAI")
-            system_prompt = """You are a helpful chatbot that can search the web for information. 
-When users ask questions that don't require current information, provide friendly, helpful responses.
-Keep responses concise and engaging. If appropriate, suggest they can ask you to search for specific information."""
+            system_prompt = """
+                You are a helpful chatbot that can search the web for information. 
+                When users ask questions that don't require current information, provide friendly, helpful responses.
+                Keep responses concise and engaging. If appropriate, suggest they can ask you to search for specific information.
+                """
 
             # Create messages array with conversation history
             messages = [{"role": "system", "content": system_prompt}]
@@ -148,8 +153,8 @@ Keep responses concise and engaging. If appropriate, suggest they can ask you to
             response = await self.openai_client.chat.completions.create(
                 model="gpt-4.1-mini",
                 messages=messages,
-                temperature=0.7,
-                max_tokens=150
+                temperature=0.3,
+                max_tokens=400
             )
             
             content = response.choices[0].message.content.strip()
@@ -213,11 +218,12 @@ Keep responses concise and engaging. If appropriate, suggest they can ask you to
                         "link": kg.get("link", "")
                     })
             
-            system_prompt = """You are a helpful AI assistant that summarizes search results.
-Given a user query and search results, provide a concise, informative summary that directly answers the user's question.
-Focus on extracting the most relevant information from the search results.
-Your summary should be 2-3 paragraphs at most, highlighting the key points and insights.
-"""
+            system_prompt = """
+            You are a helpful AI assistant that summarizes search results.
+            Given a user query and search results, provide a concise, informative summary that directly answers the user's question.
+            Focus on extracting the most relevant information from the search results.
+            Your summary should be 2-3 paragraphs at most, highlighting the key points and insights.
+            """
 
             search_results_text = json.dumps(simplified_results, indent=2)
             
