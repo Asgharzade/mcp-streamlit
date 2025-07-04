@@ -1,0 +1,24 @@
+{
+  "name": "MCP Chatbot",
+  "description": "A smart chatbot using Model Context Protocol (MCP) with OpenAI-powered intent detection and Serper API for web search",
+  "repository": "https://github.com/yourusername/mcp-fastapi",
+  "keywords": ["python", "streamlit", "openai", "chatbot"],
+  "env": {
+    "OPENAI_API_KEY": {
+      "description": "Your OpenAI API key",
+      "required": true
+    },
+    "SERPER_API_KEY": {
+      "description": "Your Serper API key",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-apt"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python"
+    }
+  ]
+} 

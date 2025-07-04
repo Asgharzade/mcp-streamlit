@@ -35,6 +35,79 @@ A Streamlit-based chatbot that uses OpenAI's API for intelligent intent detectio
    
 5. Open your browser and navigate to the URL shown in the terminal (usually `http://localhost:8501`)
 
+## Heroku Deployment
+
+### Prerequisites
+- A Heroku account
+- Heroku CLI installed on your machine
+- Git installed on your machine
+
+### Deployment Steps
+
+1. **Login to Heroku**
+   ```
+   heroku login
+   ```
+
+2. **Create a new Heroku app**
+   ```
+   heroku create your-app-name
+   ```
+   Replace `your-app-name` with a unique name for your application.
+
+3. **Set environment variables**
+   ```
+   heroku config:set OPENAI_API_KEY=your_openai_api_key
+   heroku config:set SERPER_API_KEY=your_serper_api_key
+   ```
+
+4. **Deploy the application**
+   ```
+   git push heroku main
+   ```
+
+5. **Scale the application**
+   ```
+   heroku ps:scale web=1
+   ```
+
+6. **Open the application**
+   ```
+   heroku open
+   ```
+
+### Updating Your Deployed App
+
+To update your deployed application after making changes:
+
+1. Commit your changes to git
+   ```
+   git add .
+   git commit -m "Your update message"
+   ```
+
+2. Push the changes to Heroku
+   ```
+   git push heroku main
+   ```
+
+### Troubleshooting
+
+- **View logs**
+  ```
+  heroku logs --tail
+  ```
+
+- **Restart the application**
+  ```
+  heroku restart
+  ```
+
+- **Check build status**
+  ```
+  heroku builds
+  ```
+
 ## How It Works
 
 The chatbot uses OpenAI's GPT-3.5-turbo to intelligently analyze user messages and determine:
