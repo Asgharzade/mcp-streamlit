@@ -34,6 +34,12 @@ def setup_sidebar(streamlit_handler: StreamlitLogHandler, show_logs: bool = True
         # Log viewer toggle
         show_logs = st.checkbox("Show Logs", value=show_logs)
         
+        # Admin link (only show for admin users)
+        if st.session_state.get("username") == "admin":
+            st.markdown("---")
+            st.markdown("### Admin")
+            st.markdown("[🔐 Admin Panel](/admin)", unsafe_allow_html=True)
+        
         st.markdown("---")
         st.markdown("### About")
         st.markdown("""

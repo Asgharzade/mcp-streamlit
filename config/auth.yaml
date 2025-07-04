@@ -1,0 +1,12 @@
+credentials:
+  usernames:
+    admin:
+      email: admin@example.com
+      name: Admin User
+      # Default password: admin
+      password: $2b$12$zf/QgurGsANePJ.gi2zlmuYbOK.ci.JZVclcIMh/ba/STu5Q5e3rW
+cookie:
+  name: mcp_auth_cookie
+  # This key will be overridden by AUTH_COOKIE_KEY environment variable if set
+  key: mcp_auth_key_placeholder
+  expiry_days: 30 

@@ -9,19 +9,24 @@ import io
 from app.utils.logging import setup_logging
 from app.utils.env import load_environment_variables
 from app.utils.streamlit_ui import setup_sidebar, display_chat_messages, display_debug_info
+from app.utils.auth import setup_authentication, is_authenticated
 from app.core.mcp_server import MCPServer
 from app.tools.serper_search import SerperSearchTool
 from app.services.chatbot import MCPChatbot
 
 # Streamlit App
-def main():
-    st.set_page_config(page_title="MCP Chatbot", page_icon="🤖", layout="wide")
-    
+st.set_page_config(page_title="MCP Chatbot", page_icon="🤖", layout="wide")
+
+# Set up logging
+logger, streamlit_handler = setup_logging()
+
+# Set up authentication
+authenticated = setup_authentication()
+
+# Only show the app if the user is authenticated
+if authenticated:
     st.title("🤖 MCP Chatbot with OpenAI Intent Detection")
     st.markdown("A smart chatbot using Model Context Protocol (MCP) with OpenAI-powered intent detection and Serper API for web search")
-    
-    # Set up logging
-    logger, streamlit_handler = setup_logging()
     
     # Load environment variables
     env_loaded, env_message = load_environment_variables()
@@ -84,12 +89,12 @@ def main():
         if not serper_api_key or not openai_api_key:
             logger.error("API keys missing, cannot process message")
             st.error("Please set both SERPER_API_KEY and OPENAI_API_KEY environment variables first!")
-            return
+            st.stop()
         
         if st.session_state.chatbot is None:
             logger.error("Chatbot not initialized")
             st.error("Chatbot not initialized. Please check your environment variables.")
-            return
+            st.stop()
         
         # Add user message to chat history
         logger.info(f"User input: {prompt}")
@@ -121,6 +126,3 @@ def main():
                     logger.error(f"Error processing message: {str(e)}")
                     st.error(error_msg)
                     st.session_state.messages.append({"role": "assistant", "content": error_msg})
-
-if __name__ == "__main__":
-    main()

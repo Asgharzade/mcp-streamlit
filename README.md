@@ -8,6 +8,7 @@ A Streamlit-based chatbot that uses OpenAI's API for intelligent intent detectio
 - 🧠 Intelligent intent detection - automatically determines when to search vs. chat
 - 🔍 Real-time web search using Serper API
 - 🌐 Streamlit web interface for easy interaction
+- 🔐 User authentication system with admin panel
 - 🔄 MCP (Model Context Protocol) compliant tool integration
 - 💾 Chat history persistence
 - 🐛 Debug mode to see AI decision-making
@@ -24,9 +25,11 @@ A Streamlit-based chatbot that uses OpenAI's API for intelligent intent detectio
    ```
    SERPER_API_KEY=your_serper_api_key_here
    OPENAI_API_KEY=your_openai_api_key_here
+   AUTH_COOKIE_KEY=your_secure_random_string_here
    ```
    - Get your Serper API key from [https://serper.dev/](https://serper.dev/)
    - Get your OpenAI API key from [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+   - Generate a secure random string for AUTH_COOKIE_KEY (e.g., using `openssl rand -hex 32`)
 
 4. Run the application:
    ```
@@ -34,6 +37,77 @@ A Streamlit-based chatbot that uses OpenAI's API for intelligent intent detectio
    ```
    
 5. Open your browser and navigate to the URL shown in the terminal (usually `http://localhost:8501`)
+
+6. Login with the default credentials:
+   - Username: `admin`
+   - Password: `admin`
+
+7. For admin panel access, run:
+   ```
+   streamlit run admin.py
+   ```
+
+## Release History
+
+### Version 1.1.0 (May 29, 2024)
+- Added user authentication system
+- Added admin panel for user management
+- Implemented secure cookie-based authentication
+- Added multi-page Streamlit app structure
+
+### Version 1.0.0 (May 15, 2024)
+- Initial release with OpenAI intent detection
+- Serper API integration for web search
+- Streamlit web interface
+
+For detailed release notes, see the [CHANGELOG.md](CHANGELOG.md) file.
+
+### Release Process
+
+To create a new release:
+
+1. Run the release script:
+   ```
+   # On Linux/Mac
+   ./scripts/release.py 1.2.0
+   
+   # On Windows
+   scripts\release.bat 1.2.0
+   ```
+
+2. Follow the prompts to enter changes for each category
+3. Review the updated VERSION and CHANGELOG.md files
+4. Commit and push the changes
+5. Create a new GitHub release (optional)
+
+## Authentication System
+
+The application includes a user authentication system with the following features:
+
+- **Login/Logout**: Secure access to the chatbot interface
+- **User Management**: Admin panel for managing users
+- **Password Reset**: Admin can reset user passwords
+- **Role-Based Access**: Admin-specific features and pages
+
+### Default Credentials
+
+- **Username**: admin
+- **Password**: admin
+
+### Admin Panel
+
+Access the admin panel by:
+1. Running `streamlit run admin.py`
+2. Clicking the "Admin Panel" link in the sidebar (admin users only)
+
+The admin panel allows you to:
+- View all registered users
+- Add new users
+- Reset user passwords
+
+### Authentication Configuration
+
+Authentication settings are stored in `config/auth.yaml`. This file is automatically created with default settings if it doesn't exist.
 
 ## Heroku Deployment
 
@@ -59,7 +133,9 @@ A Streamlit-based chatbot that uses OpenAI's API for intelligent intent detectio
    ```
    heroku config:set OPENAI_API_KEY=your_openai_api_key
    heroku config:set SERPER_API_KEY=your_serper_api_key
+   heroku config:set AUTH_COOKIE_KEY=your_secure_random_string
    ```
+   Generate a secure random string for AUTH_COOKIE_KEY (e.g., using `openssl rand -hex 32`)
 
 4. **Deploy the application**
    ```
@@ -75,6 +151,18 @@ A Streamlit-based chatbot that uses OpenAI's API for intelligent intent detectio
    ```
    heroku open
    ```
+
+### Authentication on Heroku
+
+When deploying to Heroku, note that:
+
+1. The authentication config file (`config/auth.yaml`) will be created automatically on first run
+2. The `AUTH_COOKIE_KEY` environment variable will be used for secure cookie encryption
+3. User data will be reset when the Heroku dyno restarts, as Heroku has an ephemeral filesystem
+
+For persistent user data on Heroku, consider:
+- Using a database add-on to store user credentials
+- Using Heroku's config vars to store initial admin credentials
 
 ### Updating Your Deployed App
 
@@ -148,6 +236,7 @@ Toggle debug information to see the AI's decision-making process, including:
 - **Serper API**: Web search capabilities
 - **MCP Protocol**: Tool integration framework
 - **Async/await**: Non-blocking API calls
+- **Streamlit Authenticator**: User authentication system
 
 ## Development
 
@@ -158,6 +247,8 @@ This project uses:
 - Serper API for web search
 - httpx for async HTTP requests
 - python-dotenv for environment variable management
+- streamlit-authenticator for user authentication
+- PyYAML for configuration management
 
 ## License
 

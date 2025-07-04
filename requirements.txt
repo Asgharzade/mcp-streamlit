@@ -9,3 +9,5 @@ jinja2
 streamlit
 httpx
 asyncio
+streamlit-authenticator>=0.2.0
+pyyaml
